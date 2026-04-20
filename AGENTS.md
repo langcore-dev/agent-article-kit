@@ -9,7 +9,8 @@ Claude Code / Codex CLI 対応の日本語の記事作成ツールキット。
 .claude/
 ├── commands/        # スラッシュコマンド定義
 │   ├── write-article.md
-│   └── interview.md
+│   ├── interview.md
+│   └── review-article.md
 ├── skills/          # ワークフロー定義（SKILL.md）
 │   ├── write-article/
 │   ├── interview/
