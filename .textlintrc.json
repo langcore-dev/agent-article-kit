@@ -9,7 +9,13 @@
       "sentence-length": {
         "max": 100
       },
-      "no-exclamation-question-mark": false
+      "no-exclamation-question-mark": false,
+      "no-mix-dearu-desumasu": {
+        "preferInHeader": "",
+        "preferInBody": "ですます",
+        "preferInList": "",
+        "strict": true
+      }
     },
     "no-doubled-joshi": {
       "min_interval": 1,
@@ -17,6 +23,11 @@
       "allow": []
     },
     "ja-no-redundant-expression": true,
-    "ja-unnatural-alphabet": true
+    "ja-unnatural-alphabet": true,
+    "prh": {
+      "rulePaths": [
+        "./prh.yml"
+      ]
+    }
   }
 }

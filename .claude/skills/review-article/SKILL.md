@@ -1,41 +1,45 @@
 ---
 name: review-article
-description: 記事ドラフトをレビューし、構成・文章・訴求力の観点からフィードバックと改善案を提示する。
+description: 記事ドラフトをレビューし、構成・文章・訴求力・AI文体・ファクトの観点からフィードバックと改善案を提示する。
+argument-hint: "[記事のファイルパス]"
 ---
 
 # 記事レビュースキル
 
-記事ドラフトを読み込み、article-template.md の文章ルールとレビュー観点に基づいてフィードバックを行うスキル。レビュー結果をユーザーに提示し、承認後に修正を適用する。
+記事ドラフトを読み込み、共通の文章ルールとレビュー観点に基づいてフィードバックを行うスキル。レビュー結果をユーザーに提示し、承認後に修正を適用する。
+
+呼び出し例:
+
+```text
+/review-article
+/review-article articles/2026-04-08-ai-exhibition-behind-the-scenes.md
+```
 
 ## 前提ファイル
 
-このスキルは以下のファイルと連携する。すべてプロジェクトルートからの相対パスで参照すること。
+すべてプロジェクトルートからの相対パスで参照する。
 
-- `.claude/skills/write-article/article-template.md` - 記事テンプレートと文章ルール
+- `.claude/shared/writing-rules.md` - 文章ルール、タイトル指針、行動経済学テクニック
 - `.claude/skills/review-article/review-checklist.md` - レビュー観点チェックリスト
+- `.claude/skills/write-article/article-template.md` / `.claude/skills/interview/article-template.md` - 記事の構成（記事の形に合うほう）
 - `.claude/skills/yomiyasu/` - AI が書いた日本語を推敲する yomiyasu スキル（ALGO ARTIS、MIT）
 
 ## ワークフロー
 
 ### Phase 1: 記事の読み込み
 
-AskUserQuestion ツールを使い、レビュー対象を特定する。
+#### 1-1. 対象記事の特定
 
-**質問1: 対象記事の指定**
+- 引数に記事のファイルパスがあれば、それを対象にする
+- 引数がなければ `articles/*.md` を Glob で検索する
+  - 1件だけなら、それを対象にする
+  - 複数あれば、更新日の新しい順に最大4件を選択肢にして AskUserQuestion で選んでもらう
+- 記事ファイルを Read で読み込む
+- `articles/.work/{記事のslug}/material.md` があれば、素材として読み込む（ファクトチェックと yomiyasu の資料に使う）
 
-```
-question: "レビューする記事を指定してください"
-options:
-  - label: "ファイルパスを指定"
-    description: "articles/ ディレクトリ内の記事ファイルパスを教えてください"
-  - label: "最新の記事"
-    description: "articles/ ディレクトリ内で最も新しい記事をレビューする"
-```
+#### 1-2. レビューの重点
 
-- 「最新の記事」の場合: `articles/` ディレクトリを Glob で検索し、最新のファイルを自動選択する
-- 記事ファイルを Read ツールで読み込む
-
-**質問2: レビューの重点（任意）**
+AskUserQuestion で重点を聞く。急ぐ場合は「全体的にレビュー」を選べばよい。
 
 ```
 question: "特に重点的にレビューしたい観点はありますか？"
@@ -43,7 +47,7 @@ options:
   - label: "全体的にレビュー"
     description: "すべての観点でバランスよくレビューする"
   - label: "読みやすさ重視"
-    description: "文章の流れ、リズム、わかりやすさを重点的にチェック"
+    description: "文章の流れ、リズム、AI特有の表現を重点的にチェック"
   - label: "訴求力重視"
     description: "候補者や読者への響き方、魅力の伝わり方を重点的にチェック"
   - label: "正確性重視"
@@ -52,7 +56,7 @@ options:
 
 ### Phase 2: レビュー実行
 
-`.claude/skills/review-article/review-checklist.md` と `.claude/skills/write-article/article-template.md` を読み込み、以下の観点でレビューを行う。
+`.claude/skills/review-article/review-checklist.md` と `.claude/shared/writing-rules.md` を読み込み、以下の観点でレビューを行う。
 
 #### レビュー観点
 
@@ -147,8 +151,10 @@ options:
 
 - `textlint --fix` で解決できる軽微な機械修正は先に適用してよい
 - 「すべて修正する」→ ユーザー確認後に、すべての改善点を Edit ツールで適用し、textlint を再実行する
-- 「yomiyasu で推敲する」→ すべての改善点を適用したあと、yomiyasu スキルで記事全体を推敲する。文書の種類（`promo` / `article`）と想定読者を伝え、推敲した最終稿で元の記事ファイルを上書きしてから textlint を再実行する。yomiyasu の完了報告にある「書き手に確かめたい点」はユーザーに提示する
+- 「yomiyasu で推敲する」→ すべての改善点を適用したあと、yomiyasu スキルで記事全体を推敲する。文書の種類（`promo` / `article`）と想定読者を伝え、作業ファイルがあれば資料として渡す。推敲した最終稿で元の記事ファイルを上書きしてから textlint を再実行する。yomiyasu の完了報告にある「書き手に確かめたい点」はユーザーに提示する
 - 「選んで修正する」→ ユーザーに修正する項目を選んでもらい、選択された項目のみ適用する
 - 「修正しない」→ 完了メッセージを表示する
 
 修正後は記事全文を Read ツールで読み込み、ユーザーに提示する。
+
+修正を終えたら、公開用の形式や SNS の告知文が必要なときは `publish-article` スキル（`/publish-article {記事パス}`）で書き出せることを一言案内する。

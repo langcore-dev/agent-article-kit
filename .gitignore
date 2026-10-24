@@ -3,3 +3,6 @@ articles/*.md
 !articles/.gitkeep
 .claude/settings.local.json
 .vscode/
+articles/.work/
+articles/exports/
+.article-kit/profile.md
