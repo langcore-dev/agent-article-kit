@@ -6,11 +6,40 @@
 # 自社の社名やプロダクト名は「自社の表記」に追記してください。
 version: 1
 rules:
-  # --- 自社の表記（例。自社に合わせて書き換えてください） ---
+  # --- 自社の表記 ---
+  # 社名
+  - expected: 株式会社LangCore
+    patterns:
+      - 株式会社 LangCore
+      - LangCore株式会社
+      - LangCore 株式会社
+      - (株)LangCore
+      - （株）LangCore
   - expected: LangCore
     patterns:
       - Langcore
       - LANGCORE
+      - ラングコア
+
+  # プロダクト・サービス名
+  - expected: LangCoreOperator
+    patterns:
+      - LangCore Operator
+      - LangCore operator
+      - LangCoreoperator
+  - expected: LangCoreFirst Deploy
+    patterns:
+      - LangCore First Deploy
+      - LangCoreFirstDeploy
+      - LangCoreFirst deploy
+      - LangCore first deploy
+  - expected: LangCore Agent Deploy
+    patterns:
+      - LangCoreAgent Deploy
+      - LangCore AgentDeploy
+      - LangCoreAgentDeploy
+      - LangCore Agent deploy
+      - LangCore agent deploy
 
   # --- サービス・ツール名 ---
   - expected: GitHub
