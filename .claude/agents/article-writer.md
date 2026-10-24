@@ -61,6 +61,11 @@ model: sonnet
    - 修正後に再度 textlint を実行してエラーが0になることを確認する
    - 手動修正が必要な場合は Edit ツールで対応する
 4. 未インストールの場合: textlint はスキップし、文章ルールに沿ったセルフチェックを行う
+5. yomiyasu の検査で AI 特有の表現を確認する: `python3 .claude/skills/yomiyasu/scripts/yomiyasu_lint.py {ファイルパス} --doc-type promo`
+   - 不自然な比喩動詞、決まり文句、過剰な太字・箇条書き・絵文字などが見直し候補として出る
+   - 候補は合否ではない。元の素材と照らし合わせ、直すべきものだけを Edit ツールで直す
+   - 直したあとは textlint を再実行し、エラー0を保つ
+   - `python3` がない場合はこの手順を飛ばす
 
 ## 文章スタイル
 

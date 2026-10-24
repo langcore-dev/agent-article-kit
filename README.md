@@ -8,6 +8,7 @@ AI コーディングエージェント（Claude Code / Codex CLI）を使った
 - `/interview` - エンジニアへの対話型インタビューを実施し、採用広報記事を自動生成
 - `/review-article` - 記事ドラフトを構成・文章・訴求力の観点でレビューし、改善案を提示
 - 日本語の技術文章向け textlint 設定を同梱
+- AI が書いた日本語を推敲するスキル [yomiyasu](https://github.com/nanaism/yomiyasu) を同梱し、記事生成とレビューの流れに組み込み済み
 
 ## セットアップ
 
@@ -69,6 +70,26 @@ $review-article
 
 `articles/` ディレクトリ内の記事を、構成・文章ルール・視点の一貫性・具体性・訴求力・textlint の6次元でレビューします。
 
+### yomiyasu で推敲する
+
+記事の生成（`/write-article`・`/interview`）では、ドラフトを書いたあとに自動で yomiyasu の推敲を通します。単体で使う場合は次のように依頼します。
+
+```text
+articles/2026-10-24-example.md を yomiyasu で推敲して。採用広報の記事です。
+```
+
+```text
+/yomiyasu
+```
+
+付属の検査ツールで、AI 特有の表現の見直し候補を出すこともできます（Python 3 が必要です）。
+
+```bash
+npm run lint:yomiyasu -- articles/対象ファイル.md --doc-type promo
+```
+
+`--doc-type` は採用広報・社内広報なら `promo`、テックブログなら `article` を指定します。
+
 ### textlint を手動で実行する
 
 ```bash
@@ -115,6 +136,18 @@ textlint がインストールされている場合、記事生成後に自動�
 
 - `.textlintrc.json` を編集してください
 
+### yomiyasu の更新
+
+`.claude/skills/yomiyasu/` は [nanaism/yomiyasu](https://github.com/nanaism/yomiyasu) の `skills/yomiyasu/` をそのままコピーしたものです（v2.3.0 を同梱）。最新版にするには次を実行します。
+
+```bash
+rm -rf /tmp/yomiyasu .claude/skills/yomiyasu
+git clone --depth 1 https://github.com/nanaism/yomiyasu /tmp/yomiyasu
+cp -R /tmp/yomiyasu/skills/yomiyasu .claude/skills/yomiyasu
+```
+
+スキルを入れられない環境（ChatGPT のカスタム指示、Microsoft 365 Copilot など）では、短縮版の [yomiyasu-mini](https://github.com/nanaism/yomiyasu-mini)（SKILL.md 18,000字以下）や [yomiyasu-pocket](https://github.com/nanaism/yomiyasu-pocket)（指示欄に貼る400〜500字）を使えます。
+
 ## ディレクトリ構成
 
 ```
@@ -132,3 +165,5 @@ package.json         # 依存パッケージ
 ## ライセンス
 
 MIT
+
+同梱の `.claude/skills/yomiyasu/` は [ALGO ARTIS](https://www.algo-artis.com/) による yomiyasu で、MIT ライセンスです（同ディレクトリの `LICENSE` と `UNICODE-LICENSE.txt` を参照）。
