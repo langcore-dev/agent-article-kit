@@ -1,0 +1,82 @@
+# 社名・プロダクト名・技術用語の表記辞書（textlint-rule-prh）
+#
+# expected が正しい表記、patterns が直したい表記です。
+# URL やコードに含まれる小文字表記（github.com など）を誤検出しないよう、
+# patterns には大文字・小文字が混ざった誤表記だけを書きます。
+# 自社の社名やプロダクト名は「自社の表記」に追記してください。
+version: 1
+rules:
+  # --- 自社の表記（例。自社に合わせて書き換えてください） ---
+  - expected: LangCore
+    patterns:
+      - Langcore
+      - LANGCORE
+
+  # --- サービス・ツール名 ---
+  - expected: GitHub
+    patterns:
+      - Github
+      - GitHUB
+  - expected: GitHub Actions
+    patterns:
+      - GitHub actions
+      - Github Actions
+  - expected: GitLab
+    patterns:
+      - Gitlab
+  - expected: Slack
+    patterns:
+      - SLACK
+  - expected: Notion
+    patterns:
+      - NOTION
+  - expected: Figma
+    patterns:
+      - FIGMA
+  - expected: Claude Code
+    patterns:
+      - Claude code
+      - ClaudeCode
+  - expected: ChatGPT
+    patterns:
+      - ChatGpt
+      - chatGPT
+      - Chat GPT
+
+  # --- 言語・技術 ---
+  - expected: JavaScript
+    patterns:
+      - Javascript
+      - JAVASCRIPT
+  - expected: TypeScript
+    patterns:
+      - Typescript
+      - TYPESCRIPT
+  - expected: Next.js
+    patterns:
+      - NextJS
+      - Nextjs
+      - NextJs
+  - expected: Node.js
+    patterns:
+      - NodeJS
+      - Nodejs
+      - NodeJs
+  - expected: PostgreSQL
+    patterns:
+      - Postgresql
+      - PostgreSql
+  - expected: MySQL
+    patterns:
+      - Mysql
+      - MYSQL
+  - expected: AWS
+    patterns:
+      - Aws
+  - expected: Google Cloud
+    patterns:
+      - google cloud
+  - expected: iOS
+    patterns:
+      - IOS
+      - Ios
