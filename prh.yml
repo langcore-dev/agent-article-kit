@@ -21,17 +21,18 @@ rules:
       - LANGCORE
       - ラングコア
 
-  # プロダクト・サービス名
-  - expected: LangCoreOperator
+  # プロダクト・サービス名（LangCore のあとは必ず半角スペース）
+  - expected: LangCore Operator
     patterns:
-      - LangCore Operator
+      - LangCoreOperator
       - LangCore operator
       - LangCoreoperator
-  - expected: LangCoreFirst Deploy
+  - expected: LangCore First Deploy
     patterns:
-      - LangCore First Deploy
+      - LangCoreFirst Deploy
       - LangCoreFirstDeploy
-      - LangCoreFirst deploy
+      - LangCore FirstDeploy
+      - LangCore First deploy
       - LangCore first deploy
   - expected: LangCore Agent Deploy
     patterns:
