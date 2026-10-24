@@ -13,6 +13,7 @@ description: 記事ドラフトをレビューし、構成・文章・訴求力�
 
 - `.claude/skills/write-article/article-template.md` - 記事テンプレートと文章ルール
 - `.claude/skills/review-article/review-checklist.md` - レビュー観点チェックリスト
+- `.claude/skills/yomiyasu/` - AI が書いた日本語を推敲する yomiyasu スキル（ALGO ARTIS、MIT）
 
 ## ワークフロー
 
@@ -64,7 +65,18 @@ options:
 | **訴求力** | タイトルにフックがあるか / 読者が「読みたい」と思える導入か / メッセージが明確か |
 | **行動経済学** | アンカリング・社会的証明・損失回避・フレーミング・ピーク・エンドの法則・物語への没入・認知容易性・内集団バイアスが効果的に活用されているか |
 | **ファクトチェック** | ツール名・技術仕様・機能名・数値データ等の客観的事実が正しいか（WebSearch で公式情報と照合） |
+| **AI文体（yomiyasu）** | 不自然な比喩動詞・擬人化・決まり文句・曖昧な主述関係・過剰な太字や箇条書きが残っていないか（yomiyasu の lint で確認） |
 | **textlint** | textlint を実行してエラーがないか |
+
+#### AI文体（yomiyasu）の確認
+
+次のコマンドで見直し候補を出す。採用広報・社内広報は `promo`、テックブログは `article` を指定する。
+
+```bash
+python3 .claude/skills/yomiyasu/scripts/yomiyasu_lint.py {記事パス} --doc-type promo
+```
+
+候補は合否ではない。元の文脈と照らし合わせ、読みにくさや意味のぼやけにつながるものだけを改善点に含める。
 
 #### ファクトチェックの進め方
 
@@ -107,6 +119,8 @@ options:
 - ⚠️ 誤解を招く: {該当項目と根拠 URL}
 - ❌ 誤り: {該当項目と正しい情報・根拠 URL}
 
+**yomiyasu lint 結果**: 見直し候補 {件数}件（改善点に含めたもの {件数}件）
+
 **textlint 結果**: {エラー数}件
 ```
 
@@ -121,6 +135,8 @@ question: "レビュー結果を確認してください。どう対応します
 options:
   - label: "すべて修正する"
     description: "指摘事項をすべて反映する"
+  - label: "yomiyasu で推敲する"
+    description: "指摘事項を反映したうえで、記事全体を yomiyasu スキルで推敲する"
   - label: "選んで修正する"
     description: "修正する項目を選択する"
   - label: "修正しない"
@@ -131,6 +147,7 @@ options:
 
 - `textlint --fix` で解決できる軽微な機械修正は先に適用してよい
 - 「すべて修正する」→ ユーザー確認後に、すべての改善点を Edit ツールで適用し、textlint を再実行する
+- 「yomiyasu で推敲する」→ すべての改善点を適用したあと、yomiyasu スキルで記事全体を推敲する。文書の種類（`promo` / `article`）と想定読者を伝え、推敲した最終稿で元の記事ファイルを上書きしてから textlint を再実行する。yomiyasu の完了報告にある「書き手に確かめたい点」はユーザーに提示する
 - 「選んで修正する」→ ユーザーに修正する項目を選んでもらい、選択された項目のみ適用する
 - 「修正しない」→ 完了メッセージを表示する
 

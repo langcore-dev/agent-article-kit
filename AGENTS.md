@@ -14,10 +14,12 @@ Claude Code / Codex CLI 対応の日本語の記事作成ツールキット。
 ├── skills/          # ワークフロー定義（SKILL.md）
 │   ├── write-article/
 │   ├── interview/
-│   └── review-article/
+│   ├── review-article/
+│   └── yomiyasu/    # AI文の推敲スキル（nanaism/yomiyasu を同梱）
 └── agents/          # サブエージェント定義
     ├── write-article-drafter.md
     └── article-writer.md
+.agents/skills/      # Codex 用（.claude/skills/ へのシンボリックリンク）
 articles/            # 生成記事の出力先
 ```
 
@@ -27,7 +29,7 @@ articles/            # 生成記事の出力先
 
 テーマや断片メモから対話で素材を深掘りし、記事を生成する。
 
-**フロー:** 素材入力 → 6視点で深掘り対話 → 構成提案 → ドラフト生成 → レビュー。
+**フロー:** 素材入力 → 6視点で深掘り対話 → 構成提案 → ドラフト生成 → yomiyasu で推敲 → レビュー。
 
 6つの深掘り視点。
 - 具体性（固有名詞・数字）
@@ -41,7 +43,7 @@ articles/            # 生成記事の出力先
 
 エンジニアへの対話型インタビューを実施し、記事を生成する。
 
-**フロー:** 目的・対象設定 → 5カテゴリでインタビュー → ドラフト生成 → レビュー。
+**フロー:** 目的・対象設定 → 5カテゴリでインタビュー → ドラフト生成 → yomiyasu で推敲 → レビュー。
 
 5つの質問カテゴリ。
 - 技術・プロダクト
@@ -54,9 +56,20 @@ articles/            # 生成記事の出力先
 
 生成済み記事を6次元でレビューし、改善を適用する。
 
-**レビュー観点:** 構成 / 文章ルール / 視点の一貫性 / 具体性 / 訴求力 / textlint。
+**レビュー観点:** 構成 / 文章ルール / 視点の一貫性 / 具体性 / 訴求力 / AI文体（yomiyasu）/ textlint。
 
 **評価:** A（公開可）/ B（改善推奨）/ C（書き直し）
+
+### 4. AI文の推敲（yomiyasu）
+
+[yomiyasu](https://github.com/nanaism/yomiyasu)（ALGO ARTIS、MIT ライセンス）を `.claude/skills/yomiyasu/` に同梱している。
+AI が書いた日本語の不自然な比喩、擬人化、曖昧な主述関係、過剰な装飾を、意味を変えずに直す。
+
+`articles/` の記事を書いたり直したりするときは、常に yomiyasu スキル（Codex では `yomiyasu:yomiyasu`）で推敲すること。コードや設定を直したあとの作業の報告には使わなくてよい。
+
+- 文書の種類: 採用広報・社内広報は `promo`、テックブログは `article`
+- 素材やインタビュー記録を資料として渡し、資料にない事実を足さない
+- 推敲後は textlint を再実行し、エラー0を保つ
 
 ## 品質ゲート
 
@@ -68,6 +81,9 @@ npm run lint -- articles/対象ファイル.md
 
 # 自動修正
 npm run lint:fix -- articles/対象ファイル.md
+
+# AI特有の表現の見直し候補を出す（yomiyasu、Python 3 が必要。合否判定ではない）
+npm run lint:yomiyasu -- articles/対象ファイル.md --doc-type promo
 ```
 
 ### textlint ルール

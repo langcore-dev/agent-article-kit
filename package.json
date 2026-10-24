@@ -4,7 +4,8 @@
   "description": "AI コーディングエージェント対応の日本語記事作成ツールキット。採用広報・社内広報記事の作成、インタビュー、レビューを対話形式で実行できます。",
   "scripts": {
     "lint": "textlint \"articles/**/*.md\"",
-    "lint:fix": "textlint --fix \"articles/**/*.md\""
+    "lint:fix": "textlint --fix \"articles/**/*.md\"",
+    "lint:yomiyasu": "python3 .claude/skills/yomiyasu/scripts/yomiyasu_lint.py"
   },
   "keywords": [
     "textlint",
